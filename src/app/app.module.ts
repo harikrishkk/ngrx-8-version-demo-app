@@ -10,7 +10,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { effects } from './effects';
 import { metaReducers, reducers } from './reducers';
-import { UserService } from './services/users.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -31,7 +30,7 @@ import { UserService } from './services/users.service';
     }),
     EffectsModule.forRoot([...effects])
   ],
-  providers: [UserService],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
