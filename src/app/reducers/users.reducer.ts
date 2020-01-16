@@ -1,21 +1,24 @@
+import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
 
 import { UserActions } from '../actions/users.types';
 import { User } from '../models/users.model';
 
-export interface UserState {
-  users: User[];
-  isLoading: boolean;
-  error: string;
+export interface UserState extends EntityState<User> {
+  allUsersLoaded: boolean;
 }
-export const INITIAL_STATE: UserState = {
-  users: null,
-  isLoading: false,
-  error: ""
-};
+export const adapter = createEntityAdapter<User>();
+export const initialUserState = adapter.getInitialState({
+  allUsersLoaded: false
+});
+// export const INITIAL_STATE: UserState = {
+//   users: null,
+//   isLoading: false,
+//   error: ""
+// };
 
 export const userReducer = createReducer(
-  INITIAL_STATE,
+  initialUserState,
   on(UserActions.fetchUsers, (state, action) => {
     return {
       ...state,
@@ -24,11 +27,10 @@ export const userReducer = createReducer(
   }),
 
   on(UserActions.fetchUsersSuccess, (state, action) => {
-    return {
+    return adapter.addAll(action.users, {
       ...state,
-      users: action.users,
-      isLoading: false
-    };
+      allUsersLoaded: true
+    });
   }),
 
   on(UserActions.fetchUsersFail, (state, action) => {
@@ -39,3 +41,5 @@ export const userReducer = createReducer(
     };
   })
 );
+
+export const { selectAll } = adapter.getSelectors();
